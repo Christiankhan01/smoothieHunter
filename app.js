@@ -9,6 +9,9 @@ const app = express();
 
 // middleware
 app.use(express.static('public'));
+//takes json data and passes it to a javascript object to use inside code
+//can be accessed in req handlers
+app.use(express.json()); 
 
 // view engine
 app.set('view engine', 'ejs');
