@@ -8,7 +8,7 @@ const handleErrors=(err) => {
 
     //duplicate error code
     if(err.code===11000) {
-        errors.email='This email has been registered';
+        errors.email='This email has already been registered';
         return errors;
     }
 
