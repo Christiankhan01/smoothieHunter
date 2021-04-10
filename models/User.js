@@ -16,6 +16,20 @@ const userSchema = new mongoose.Schema({
     }, 
 }); 
 
+//function AFTER doc saved to database
+userSchema.post('save', function(doc, next) {
+    console.log('new user was created & saved', doc); 
+    next();
+})
+
+//function BEFORE doc saved to database
+userSchema.pre('save', function(next) {
+    console.log('user about to be created & saved', this);
+    next(); 
+})
+
+
+
 const User = mongoose.model('user', userSchema);
 
 module.exports = User; 
