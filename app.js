@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
+const cookieParser = require('cookie-parser');
 
 
 
@@ -12,7 +13,7 @@ app.use(express.static('public'));
 //takes json data and passes it to a javascript object to use inside code
 //can be accessed in req handlers
 app.use(express.json()); 
-
+app.use(cookieParser());
 // view engine
 app.set('view engine', 'ejs');
 
