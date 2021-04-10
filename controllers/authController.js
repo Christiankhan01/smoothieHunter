@@ -25,7 +25,7 @@ const handleErrors=(err) => {
 //jwt - set in seconds NOT milliseconds
 const maxAge = 3 * 24 * 60 * 60; 
 const createToken=(id) => {
-    return jwt.sign({id}, '123123', {
+    return jwt.sign({id}, process.env.jwtSecret, {
         expiresIn: maxAge 
     }); 
 }
