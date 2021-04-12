@@ -6,12 +6,21 @@ const handleErrors=(err) => {
     console.log(err.message, err.code);
     let errors={email: '', password: ''};
 
-    //duplicate error code
+    //duplicate  error code
     if(err.code===11000) {
         errors.email='This email has already been registered';
         return errors;
     }
 
+    //incorrect email 
+    if(err.message==='Incorrect Email') {
+        errors.email='Email is not registered';
+    }
+
+    //incorrect password 
+    if(err.message==='Incorrect Password') {
+        errors.password='Password is incorrect';
+    }
 
     //validation errors
     if(err.message.includes('user validation failed')) {
@@ -23,11 +32,11 @@ const handleErrors=(err) => {
 }
 
 //jwt - set in seconds NOT milliseconds
-const maxAge = 3 * 24 * 60 * 60; 
+const maxAge=3*24*60*60;
 const createToken=(id) => {
     return jwt.sign({id}, process.env.jwtSecret, {
-        expiresIn: maxAge 
-    }); 
+        expiresIn: maxAge
+    });
 }
 
 
@@ -39,14 +48,19 @@ module.exports.signup_get=(req, res) => {
 module.exports.login_get=(req, res) => {
     res.render('login');
 }
+/**
+ * signup_post function 
+ * @param {*} req 
+ * @param {*} res 
+ */
 
 module.exports.signup_post=async (req, res) => {
     const {email, password}=req.body;
     try {
         //ID for jwt
         const user=await User.create({email, password})
-        const token = createToken(user._id); 
-        res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge * 1000}); //set in milliseconds
+        const token=createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge*1000}); //set in milliseconds
         res.status(201).json({user: user._id});
     } catch(err) {
         const errors=handleErrors(err);
@@ -54,10 +68,24 @@ module.exports.signup_post=async (req, res) => {
     }
 }
 
+/**
+ * login_post function takes user email and password...
+* ... and calls the User.login function from user schema...
+
+ * @param {*} req  send email and pass to server
+ * @param {*} res  respond with userID if Ok or empty object {} if not
+ */
 module.exports.login_post=async (req, res) => {
     const {email, password}=req.body;
 
-
-    console.log(email, password);
-    res.send('user login');
+    try {
+        const user=await User.login(email, password);
+        
+        const token=createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: maxAge*1000});
+        res.status(200).json({user: user._id});
+    } catch(err) {
+        const errors=handleErrors(err);
+        res.status(400).json({errors});
+    }
 }
