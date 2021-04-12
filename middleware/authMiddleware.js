@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken'); 
+const User = require('../models/User');
 
 /**
  * Grab token
@@ -34,7 +35,7 @@ const requireAuth = (req, res, next) => {
  * ... else find user by Id and set res.local to user. 
  * @param {*} req   send cookies.jwt to be verified
  * @param {*} res   response of null OR user
- * @param {*} next 
+ * @param {*} next  
  */
 const checkUser = (req, res, next) => {
     const token = req.cookies.jwt; 
